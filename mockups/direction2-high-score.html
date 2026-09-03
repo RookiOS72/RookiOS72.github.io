@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rook — high score table mockup</title>
+  <style>
+    /* Direction 2: "High score table"
+       Visual: full-color arcade cocktail cabinet display. Multi-color pixel
+       font, project names styled as initials ("LR — LODE RUNNER", "AS —
+       ASTEROIDS"), score displays, animated cursor blinking through entries.
+       Looks like the attract-mode leaderboard from a 1983 cabinet. */
+
+    :root {
+      /* Full arcade color palette */
+      --bg: #0a0420;
+      --panel: #1a0a35;
+      --border: #ff7755;
+      --text: #ffeebb;
+      --gold: #ffcc33;
+      --blue: #44aaff;
+      --purple: #cc88ff;
+      --green: #66ff99;
+      --pink: #ff66cc;
+    }
+
+    /* Pixel font - "Press Start 2P" for the chunky retro look */
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Press Start 2P', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* CRT scanlines + slight chromatic aberration */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0) 0px,
+        rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.25) 2px,
+        rgba(0,0,0,0.25) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Moving starfield background - subtle */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(2px 2px at 47px 192px, var(--gold), transparent),
+        radial-gradient(1.5px 1.5px at 312px 96px, var(--blue), transparent),
+        radial-gradient(2px 2px at 608px 312px, var(--pink), transparent),
+        radial-gradient(1.5px 1.5px at 88px 384px, var(--purple), transparent),
+        radial-gradient(2px 2px at 768px 144px, var(--gold), transparent),
+        radial-gradient(1.5px 1.5px at 224px 224px, var(--green), transparent),
+        radial-gradient(2px 2px at 528px 432px, var(--blue), transparent);
+      background-repeat: no-repeat;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+      animation: scrollStars 25s linear infinite;
+    }
+
+    @keyframes scrollStars {
+      from { transform: translateY(0); }
+      to { transform: translateY(-50px); }
+    }
+
+    /* The big cabinet frame - arcade-cabinet feel */
+    .cabinet {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 24px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .screen {
+      width: 100%;
+      border: 4px solid var(--border);
+      box-shadow:
+        0 0 0 2px #000,
+        0 0 30px var(--border),
+        inset 0 0 60px rgba(0, 0, 0, 0.5);
+      background: var(--panel);
+      padding: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Marquee at top - "ROOK HI-SCORE" */
+    .marquee {
+      text-align: center;
+      font-size: clamp(20px, 4vw, 40px);
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-shadow:
+        3px 0 0 var(--pink), -3px 0 0 var(--blue), 0 0 20px var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .marquee-sub {
+      text-align: center;
+      font-size: clamp(10px, 1.5vw, 14px);
+      letter-spacing: 0.3em;
+      color: var(--blue);
+      margin-bottom: 32px;
+      padding-bottom: 12px;
+      border-bottom: 2px dashed var(--blue);
+    }
+
+    .tagline {
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--text);
+      opacity: 0.8;
+      margin-bottom: 32px;
+    }
+
+    /* High-score table */
+    .table {
+      font-size: clamp(11px, 1.7vw, 14px);
+      padding: 16px 0;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 90px;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 4px;
+      text-decoration: none;
+      color: var(--text);
+      border-bottom: 1px solid rgba(255, 119, 85, 0.15);
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+
+    .table-row:hover { background: rgba(255, 204, 51, 0.12); }
+    .table-row:last-child { border-bottom: none; }
+
+    .rank {
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .rank-1 { color: var(--gold); }
+    .rank-2 { color: #ddc8a8; }
+    .rank-3 { color: #ad8c6c; }
+    .rank-cursor {
+      color: var(--pink);
+      animation: cursorBlink 0.6s steps(2) infinite;
+      font-size: 22px;
+    }
+
+    @keyframes cursorBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .name {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .initials {
+      background: var(--border);
+      color: #000;
+      padding: 3px 6px;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    .title-name {
+      letter-spacing: 0.1em;
+    }
+
+    .play-action {
+      color: var(--gold);
+      letter-spacing: 0.2em;
+      text-align: right;
+      font-size: 10px;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 2px dashed var(--border);
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--blue);
+    }
+    .footer a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .footer a:hover { color: var(--pink); }
+  </style>
+</head>
+<body>
+  <div class="cabinet">
+    <div class="screen">
+      <div class="marquee">ROOK HI&#8209;SCORE</div>
+      <div class="marquee-sub">▌ ARCADE CHAMPIONS ▌</div>
+
+      <div class="tagline">open-source games &amp; tools, shipped from a workshop.</div>
+
+      <div class="table">
+        <a class="table-row" href="https://rookios72.github.io/asteroids/">
+          <span class="rank rank-1">1st</span>
+          <span class="name">
+            <span class="initials">AS</span>
+            <span class="title-name">ASTEROIDS · 1979 PORT</span>
+          </span>
+          <span class="play-action">▌ INSERT COIN</span>
+        </a>
+        <a class="table-row" href="https://rookios72.github.io/loderunner/">
+          <span class="rank rank-2">2nd</span>
+          <span class="name">
+            <span class="initials">LR</span>
+            <span class="title-name">LODE RUNNER · 1983 PORT</span>
+          </span>
+          <span class="play-action">▌ INSERT COIN</span>
+        </a>
+        <div class="table-row">
+          <span class="rank rank-3">3rd</span>
+          <span class="name">
+            <span class="rank-cursor">▶</span>
+            <span class="initials">__</span>
+            <span class="title-name">__________ · NEXT</span>
+          </span>
+          <span class="play-action">▌ READY</span>
+        </div>
+      </div>
+
+      <div class="footer">
+        <span>© 2026 ROOK</span>
+        <span><a href="https://github.com/RookiOS72">github.com/RookiOS72 ►</a></span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
