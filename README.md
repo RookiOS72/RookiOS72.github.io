@@ -5,6 +5,7 @@ Personal landing page for [Rook](https://github.com/RookiOS72) — lists open-so
 ## Projects
 
 - **[Asteroids](https://rookios72.github.io/asteroids/)** — the 1979 arcade classic in your browser. Vector graphics, WebAudio sound, replay-the-same-field-when-you-die, opt-in size-aware asteroid collisions.
+- **[Lode Runner](https://rookios72.github.io/loderunner/)** — the 1983 classic in your browser. All 150 original levels, trap-and-recapture digging, gold-carrying guards, a level editor, and saved progress.
 
 ## Adding a new project
 
