@@ -1,6 +1,6 @@
 # RookiOS72.github.io
 
-Personal landing page for [Rook](https://github.com/RookiOS72) — lists open-source projects with live demos.
+Personal landing page for [RookiOS72](https://github.com/RookiOS72) — a shelf of media (an Atari arcade board, an Apple II floppy), one per game, each carrying its own artwork. Click one and it drops into the matching slot on the deck, whose screen plays the game in its original machine's look.
 
 ## Projects
 
@@ -9,7 +9,7 @@ Personal landing page for [Rook](https://github.com/RookiOS72) — lists open-so
 
 ## Adding a new project
 
-Add a new `<a class="project" href="...">` block in `index.html` for each project. Order them by recency.
+Add a medium to the `.shelf` in `index.html` (a `.m` button with a `data-id`), an entry in the `G` table in the script, and a preview in the deck's screen. Each game is shown on the medium it shipped on.
 
 ## Deployment
 
